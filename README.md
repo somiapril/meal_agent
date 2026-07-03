@@ -28,6 +28,7 @@ python3 web_app.py
 - `vercel.json`: 첫 화면과 정적 파일 경로를 연결합니다.
 - `api/recommend.py`: Vercel 서버리스 함수로 추천 API를 실행합니다.
 - `main.py`: 로컬 앱과 Vercel API가 함께 쓰는 추천 로직입니다.
+- `pyproject.toml`: Vercel이 `api/recommend.py`를 Python 진입점으로 인식하게 합니다.
 
 Vercel에서 프로젝트를 만들 때 루트 디렉터리는 `meal_agent` 폴더로 두면 됩니다.
 
