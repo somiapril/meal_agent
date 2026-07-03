@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>오늘 뭐 먹지 Agent</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="topbar" aria-label="앱 상단">
+        <div class="brand-block">
+          <div class="brand-mark" aria-hidden="true">
+            <span class="plate"></span>
+            <span class="leaf leaf-left"></span>
+            <span class="leaf leaf-right"></span>
+          </div>
+          <div>
+            <p class="eyebrow">Meal Agent</p>
+            <h1>오늘 뭐 먹지 Agent</h1>
+          </div>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <form class="input-panel" id="mealForm">
+          <div class="panel-heading">
+            <h2>오늘의 입력</h2>
+            <button class="ghost-button" type="button" id="resetButton" title="입력 초기화">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 7h10a6 6 0 1 1-4.24 10.24" />
+                <path d="M4 7l4-4" />
+                <path d="M4 7l4 4" />
+              </svg>
+              <span>초기화</span>
+            </button>
+          </div>
+
+          <div class="quick-row" aria-label="빠른 예시">
+            <button type="button" class="sample-chip" data-sample="rainy">비 오는 저녁</button>
+            <button type="button" class="sample-chip" data-sample="workout">운동 후</button>
+            <button type="button" class="sample-chip" data-sample="late">늦은 야식</button>
+          </div>
+
+          <label>
+            <span>가지고 있는 재료</span>
+            <textarea name="ingredients" rows="4" placeholder="계란, 두부, 김치, 밥, 양파" required></textarea>
+          </label>
+
+          <div class="choice-field">
+            <div class="field-label">지금 컨디션</div>
+            <div class="choice-grid" data-field="condition" aria-label="컨디션 선택">
+              <button type="button" class="option-pill" data-value="피곤함">피곤함</button>
+              <button type="button" class="option-pill" data-value="속이 더부룩함">속 더부룩</button>
+              <button type="button" class="option-pill" data-value="운동 후">운동 후</button>
+              <button type="button" class="option-pill" data-value="가볍게 먹고 싶음">가볍게</button>
+              <button type="button" class="option-pill" data-value="감기 기운">감기 기운</button>
+            </div>
+            <input name="condition_other" placeholder="기타 컨디션 입력" />
+          </div>
+
+          <div class="choice-field">
+            <div class="field-label">환경</div>
+            <div class="choice-grid" data-field="environment" aria-label="환경 선택">
+              <button type="button" class="option-pill" data-value="비 오는 날">비 오는 날</button>
+              <button type="button" class="option-pill" data-value="더운 날">더운 날</button>
+              <button type="button" class="option-pill" data-value="늦은 저녁">늦은 저녁</button>
+              <button type="button" class="option-pill" data-value="설거지 적게">설거지 적게</button>
+              <button type="button" class="option-pill" data-value="15분 안에">15분 안에</button>
+            </div>
+            <input name="environment_other" placeholder="기타 환경 입력" />
+          </div>
+
+          <div class="form-grid">
+            <label>
+              <span>조리 시간</span>
+              <input name="max_minutes" type="number" min="5" max="90" value="20" />
+            </label>
+            <label>
+              <span>매운맛</span>
+              <select name="spice_text">
+                <option>약하게</option>
+                <option selected>보통</option>
+                <option>매운맛 좋아함</option>
+              </select>
+            </label>
+          </div>
+
+          <label>
+            <span>피하고 싶은 재료</span>
+            <input name="avoid_items" placeholder="없으면 비워두기" />
+          </label>
+
+          <div class="choice-field">
+            <div class="field-label">사용 가능한 조리도구</div>
+            <div class="choice-grid" data-field="tools" aria-label="조리도구 선택">
+              <button type="button" class="option-pill" data-value="냄비">냄비</button>
+              <button type="button" class="option-pill" data-value="프라이팬">프라이팬</button>
+              <button type="button" class="option-pill" data-value="전자레인지">전자레인지</button>
+              <button type="button" class="option-pill" data-value="에어프라이어">에어프라이어</button>
+              <button type="button" class="option-pill" data-value="그릇">그릇</button>
+            </div>
+            <input name="tools_other" placeholder="기타 조리도구 입력" />
+          </div>
+
+          <button class="primary-button" type="submit">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14" />
+              <path d="m13 6 6 6-6 6" />
+            </svg>
+            <span>추천 받기</span>
+          </button>
+        </form>
+
+        <section class="result-panel" aria-live="polite">
+          <div class="result-header">
+            <div>
+              <p class="eyebrow">Recommendation</p>
+              <h2>추천 결과</h2>
+            </div>
+            <div class="time-badge" id="timeBadge">대기 중</div>
+          </div>
+
+          <div class="empty-state" id="emptyState">
+            <div class="empty-visual" aria-hidden="true">
+              <span></span>
+            </div>
+            <h3>입력하면 바로 추천해드릴게요</h3>
+            <p>재료와 오늘의 상태를 넣고 추천을 받아보세요.</p>
+          </div>
+
+          <div class="results" id="results" hidden>
+            <div class="analysis-strip" id="analysisStrip"></div>
+            <div class="meal-list" id="mealList"></div>
+            <article class="recipe-panel" id="recipePanel"></article>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
